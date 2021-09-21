@@ -20,6 +20,7 @@ dy_emis = (y_max - y_min)/ny_emis
 #dt_emis = (t_max - t_min)/nt_emis
 #add t variable later
 
+#Created random emission, later to be changed by real emission data.
 emis = rand(LogNormal(1,3), nx_emis, ny_emis)
 
 #Locate/ align emis into coordinate we're using
@@ -67,13 +68,16 @@ xs,ys = [infimum(d.domain):dx:supremum(d.domain) for d in domains]
 end
 plottogether = plot(p) =#
 
+#Ploting 1 ~ 4 index of the solution
 u_sol = reshape(sol.u[1], length(xs)-2,length(ys)-2)
 p1 = plot(xs[2:length(xs)-1], ys[2:length(ys)-1], u_sol, linetype=:contourf,title = "solution")
 u_sol = reshape(sol.u[2], length(xs)-2,length(ys)-2)
 p2 = plot(xs[2:length(xs)-1], ys[2:length(ys)-1], u_sol, linetype=:contourf,title = "solution")
 u_sol = reshape(sol.u[3], length(xs)-2,length(ys)-2)
 p3 = plot(xs[2:length(xs)-1], ys[2:length(ys)-1], u_sol, linetype=:contourf,title = "solution")
-plottogether = plot(p1,p2,p3)
+u_sol = reshape(sol.u[4], length(xs)-2,length(ys)-2)
+p4 = plot(xs[2:length(xs)-1], ys[2:length(ys)-1], u_sol, linetype=:contourf,title = "solution")
+plottogether = plot(p1,p2,p3,p4)
 
 
 #Animation (didn't work)
