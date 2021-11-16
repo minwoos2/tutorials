@@ -23,6 +23,7 @@ x_max = 12000*101
 y_min = 0.
 y_max = 12000*81
 
+#Getting real dat from CMAQ
 emisission_file = "/Users/Minwoo/Desktop/emis/METDOT3D_160701.nc"
 
 
@@ -32,6 +33,7 @@ nt_emis = 24
 dx_emis = ncgetatt(emisission_file, "Global", "XCELL")
 dy_emis = ncgetatt(emisission_file, "Global", "YCELL")
 
+#Getting Uhat data
 r1 = ncread("/Users/Minwoo/Desktop/emis/METDOT3D_160701.nc","UHAT_JD")
 
 
@@ -45,7 +47,7 @@ end
 
 @register u_hat(x, y)
 
-
+#Getting Vhat data
 r2 = ncread("/Users/Minwoo/Desktop/emis/METDOT3D_160701.nc","VHAT_JD")
 
 
@@ -58,6 +60,7 @@ function v_hat(x,y)
 end
 @register v_hat(x, y)
 
+#So2 Concetration
 r3 = ncread("/Users/Minwoo/Desktop/emis/emis_mole_all_20160701_cb6_bench.nc","SO2")
 emis = r3[:, :, 1, 1]'
 
@@ -82,7 +85,7 @@ end =#
 #@register emissions(x, y, t)
 
 # 3D PDE
-#eq = Dt(u(t,x,y)) ~ Dx(u(t,x,y))
+
 eq  = Dt(u(t,x,y)) ~ u_hat(x,y)*Dx(u(t,x,y)) + v_hat(x,y)*Dy(u(t,x,y)) + emissions(x, y)
 bcs = #[u(t_min,x,y) ~ analytic_sol_func(t_min,x,y),
        [u(t_min,x,y) ~ 0,
@@ -120,15 +123,6 @@ u_sol = reshape(sol.u[4], length(xs)-1,length(ys)-1)
 p4 = plot(xs[2:length(xs)], ys[2:length(ys)], u_sol', linetype=:contourf,title = "solution")
 plottogether = plot(p1,p2,p3,p4)
 
-u_sol = reshape(sol.u[10], length(xs)-1,length(ys)-1)
-p10 = plot(xs[2:length(xs)], ys[2:length(ys)], u_sol', linetype=:contourf,title = "solution")
-plottogether = plot(p1,p2,p3,p4)
 
-
-u_sol = reshape(sol.u[1], length(xs)-1,length(ys)-1)
-p1 = plot(xs[2:length(xs)], ys[2:length(ys)], u_sol, linetype=:contourf,title = "solution")
-
-
-p1 = plot(xs[2:length(xs)-1], ys[2:length(ys)-1], u_sol', linetype=:contourf,title = "solution")
 
 julia> p1 = heatmap(xs[2:length(xs)-1], ys[2:length(ys)-1], u_sol', title = "solution")
